@@ -1,7 +1,3 @@
-// kds.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
-
 using namespace std;
 #include <cstddef>
 #include <cstdlib>
@@ -47,7 +43,6 @@ LWPT KTEstimator(const CountersT& v)
 	FT total = 0;
 	CountT occuring = 0;
 
-	//Sum Log[ Gamma ( n_sa(x) + 1/2) ]
 	for (size_t symbolIter = 0; symbolIter < alpha; symbolIter++)
 	{
 		total += v[symbolIter];
@@ -57,10 +52,8 @@ LWPT KTEstimator(const CountersT& v)
 			value -= lgamma(v[symbolIter] + 0.5);
 		}
 
-
-
 	}
-	//Add Log[ Gamma(1/2)] for non occuring symbols
+
 	value -= ((CountT)alpha - occuring) * 0.5 * M_LNPI;
 
 	value -= lgamma(alpha_2);
@@ -97,7 +90,6 @@ private:
 	ItemsT items;
 	vector<Node*> children;
 	CountersT counts;
-	//CountT totalCounts;
 	Node* parent;
 	LWPT ctProb; // probability of the sequence observed at this node given by CT*
 	DistT ctProbNext; // distribution for next symbol computed during predict and then used in update
@@ -109,7 +101,6 @@ private:
 	friend class KDSForest;
 
 public:
-	//totalCounts(0), 
 	Node(size_t _projDir, size_t alphaSize, Node* _parent) :
 		projDir(_projDir), pivot(0), ctProb(1.), wa(.5), wb(.5), parent(_parent), counts(alphaSize, 0), ctProbNext(alphaSize), probKTNext(alphaSize), pRec(alphaSize){
 	}
@@ -225,7 +216,6 @@ public:
 
 		while (!stop) {
 			cur->counts[lpoint_ptr->label]++;
-			//cur->totalCounts++;
 
 			if (cur->children.empty()) // the split was done before, we need to add the point to the leaf
 				cur->items.push_back(lpoint_ptr); //add current point
@@ -240,11 +230,9 @@ public:
 				totalCounts += cur->counts[i];
 
 			LWPT alpha_n_plus_1 = alpha(totalCounts + 1);
-			//cout << "1-2alphanplus1 " << (LWPT(1.) - LWPT(2.) * alpha_n_plus_1) << endl;
+
 			cur->wa = alpha_n_plus_1 * cur->ctProb + (LWPT(1.) - LWPT(2.) * alpha_n_plus_1) * cur->wa * cur->probKTNext[lpoint_ptr->label];
-			//cout << "cur.wa: " << cur->wa << endl;
 			cur->wb = alpha_n_plus_1 * cur->ctProb + (LWPT(1.) - LWPT(2.) * alpha_n_plus_1) * cur->wb * cur->pRec[lpoint_ptr->label];
-			//cout << "cur.wb: " << cur->wb << endl;
 
 			if (!cur->children.empty())
 				cur = cur->children[cur->selectBranch(lpoint_ptr->point)];
@@ -288,12 +276,6 @@ public:
 					cur->children[i]->counts[(*it)->label]++;
 				}
 
-				//for (int i = 0; i < 2; i++) {
-				//	cout << "[";
-				//	for (int j = 0; j < 2; j++)
-				//		cout << cur->children[i]->counts[j] << " ";
-				//	cout << "]" << endl;
-				//}
 
 				//initialize children using already existing symbols(Eq. 14)
 				//CTPROB is P_s of the sequence observed so far : just KT
@@ -322,31 +304,20 @@ public:
 		stop = false;
 		while (!stop) {
 
-			//cout << "--- [";
-			//for (int j = 0; j < 2; j++)
-			//	cout << cur->counts[j]<<" ";
-			//cout << "] ---" << endl;
-
 			// save KT dist and the other distributions for the update
 			if ((cur == root) && !p0dist.empty()) // known distribution
 				cur->probKTNext = p0dist;
 			else
 				seqKTDist(cur->probKTNext, cur->counts);  //labels in self.items are not used, just counts are used
 
-		   //cout << "probKTNExt "<< cur->probKTNext[0] << endl;
 			if (cur->children.empty())
 				cur->pRec = cur->probKTNext;
 			else
 				for (size_t i = 0; i < alphaSize; i++)
 					cur->pRec[i] = childCTprobNext[i] / childCTprob;
 
-			//cout << "prec "<< cur->pRec[0] << endl;
-
-			for (size_t i = 0; i < alphaSize; i++) {
-				//cout << "CTPROBNEXT DETAILS: wa " << cur->wa << " pktnext " << cur->probKTNext[i] << " wb " << cur->wb << " prec " << cur->pRec[i] << endl;
+			for (size_t i = 0; i < alphaSize; i++)
 				cur->ctProbNext[i] = cur->wa * cur->probKTNext[i] + cur->wb * cur->pRec[i];
-			}
-			//cout << "ctProbNext " << cur->ctProbNext[0] << endl;
 
 			if (cur->parent == NULL)
 				stop = true;
@@ -361,8 +332,6 @@ public:
 
 		for (size_t i = 0; i < alphaSize; i++)
 			dist[i] = cur->ctProbNext[i] / cur->ctProb;
-
-		//cout << "dist " << dist[0] << endl;
 
 		if (temp != NULL) {
 			for (ChildrenT::iterator it = temp->children.begin(); it != temp->children.end(); it++) {
