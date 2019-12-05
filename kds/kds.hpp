@@ -1,3 +1,13 @@
+#ifndef __KDS_HPP__
+#define __KDS_HPP__
+
+
+/******************************
+	  Author: Alix Lheritier
+		Date: 2019
+******************************/
+
+
 using namespace std;
 #include <cstddef>
 #include <cstdlib>
@@ -8,7 +18,7 @@ using namespace std;
 #include <iostream>
 #include <sstream>
 #include <fstream>
-#include "LogWeightProb.h"
+#include "LogWeightProb.hpp"
 #include <chrono>
 
 #include <math.h>
@@ -437,3 +447,5 @@ public:
 
 
 };
+
+#endif // __KDS_HPP__
