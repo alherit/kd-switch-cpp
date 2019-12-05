@@ -112,7 +112,7 @@ private:
 
 public:
 	Node(size_t _projDir, size_t alphaSize, Node* _parent) :
-		projDir(_projDir), pivot(0), ctProb(1.), wa(.5), wb(.5), parent(_parent), counts(alphaSize, 0), ctProbNext(alphaSize), probKTNext(alphaSize), pRec(alphaSize){
+		projDir(_projDir), pivot(0), counts(alphaSize, 0), parent(_parent), ctProb(1.), ctProbNext(alphaSize), probKTNext(alphaSize), pRec(alphaSize), wa(.5), wb(.5){
 	}
 
 	void setPivot(const PointT& point) {
@@ -153,8 +153,8 @@ private:
 	friend class KDSForest;
 
 public:
-	KDSTree(size_t _debug_idx, std::mt19937& _gen, size_t _dim, size_t _alphaSize, bool _ctw, const vector<FT>& theta0) : debug_idx(_debug_idx), dim(_dim), alphaSize(_alphaSize),
-		ctw(_ctw), n(0), gen(_gen), dis(0, dim - 1) {
+	KDSTree(size_t _debug_idx, std::mt19937& _gen, size_t _dim, size_t _alphaSize, bool _ctw, const vector<FT>& theta0) : alphaSize(_alphaSize), dim(_dim),
+		ctw(_ctw), n(0), gen(_gen), dis(0, dim - 1), debug_idx(_debug_idx) {
 
 		if (theta0.size() > 0) {
 			for (size_t i = 0; i < alphaSize; i++)
@@ -369,7 +369,7 @@ private:
 
 
 public:
-	KDSForest(size_t _J, int seed, size_t _dim, size_t _alphaSize, bool _ctw, const vector<FT>& theta0) :J(_J), gen(seed), alphaSize(_alphaSize), weights(J, 1. / J) {
+	KDSForest(size_t _J, int seed, size_t _dim, size_t _alphaSize, bool _ctw, const vector<FT>& theta0) :J(_J), alphaSize(_alphaSize), weights(J, 1. / J), gen(seed) {
 		for (size_t j = 0; j < J; j++)
 			trees.push_back(new KDSTree(j,gen, _dim, _alphaSize, _ctw, theta0));
 	}

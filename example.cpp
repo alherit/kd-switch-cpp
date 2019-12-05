@@ -8,7 +8,7 @@ using namespace std;
 #include <iostream>
 #include <sstream>
 #include <fstream>
-#include "LogWeightProb.h"
+#include "kds/LogWeightProb.hpp"
 #include <chrono>
 
 #include <math.h>
@@ -63,14 +63,13 @@ int main()
 		previous = point;
 	}
 
+
+	std::cout << "NLL: " << -cumCProb.getLog2() / (FT)n << endl;
+
 	auto finish = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> elapsed = finish - start;
 	std::cout << "Elapsed time: " << elapsed.count() << " s\n";
 
-	std::cout << -cumCProb.getLog2() / (FT)n << endl;
-
-
 	delete kds;
-	std::cout << "Sucess" << endl;
 
 }
