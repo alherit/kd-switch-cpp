@@ -29,23 +29,17 @@ using namespace std;
 
 int main()
 {
-	{
 		auto start = std::chrono::high_resolution_clock::now();
-		//double theta0[2] = { .5,.5 };
+
 		size_t dim = 30;
 		size_t alphaSize = 2;
-		//std::mt19937 rnd(12345);
-		//KDSTree* kds = new KDSTree(0, rnd, dim, alphaSize, true, NULL);
 		vector<double> theta0; //empty
-		KDSForest* kds = new KDSForest(50,12345,dim, alphaSize, false, theta0);
+		KDSForest* kds = new KDSForest(1,12345,dim, alphaSize, false, theta0);
 
 		std::cout << "Tree created" << endl;
 
 		ifstream fileF("../data/features.csv");
 		ifstream fileL("../data/labels.csv");
-
-		std::cout << "After stream creation" << endl;
-
 
 		string line;
 
@@ -95,8 +89,11 @@ int main()
 		std::cout << "Elapsed time: " << elapsed.count() << " s\n";
 
 		delete kds;
-		std::cout << "Sucess" << endl;
-	}
+
+#ifdef NDEBUG
+		std::cout << "Not in debug mode" << endl;
+#endif
+
 }
 
 

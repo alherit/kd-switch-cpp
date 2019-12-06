@@ -25,10 +25,9 @@ int main()
 	size_t dim = 50;
 	size_t alphaSize = 2;
 	std::mt19937 rnd(12345);
-	//KDSTree* kds = new KDSTree(0, rnd, dim, alphaSize, true, NULL);
-	//vector<double> theta0 = { .5,.5 };
-	vector<double> theta0; //empty
-	KDSForest* kds = new KDSForest(50, 12345, dim, alphaSize, false, theta0);
+	vector<double> theta0 = { .5,.5 };
+	//vector<double> theta0; //empty
+	KDSForest kds(50, 12345, dim, alphaSize, false, theta0);
 
 	std::cout << "Tree created" << endl;
 
@@ -52,13 +51,13 @@ int main()
 		label = dunif(rnd);
 
 
-		kds->predict(predDist, point, false);
+		kds.predict(predDist, point, false);
 
 		LWPT condProb = predDist[label];
 
 		cumCProb *= condProb;
 
-		kds->update(point, label, false);
+		kds.update(point, label, false);
 
 		previous = point;
 	}
@@ -70,6 +69,5 @@ int main()
 	std::chrono::duration<double> elapsed = finish - start;
 	std::cout << "Elapsed time: " << elapsed.count() << " s\n";
 
-	delete kds;
 
 }

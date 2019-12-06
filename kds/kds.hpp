@@ -161,7 +161,7 @@ public:
 				p0dist.push_back (LWPT(theta0[i]));
 		}
 
-		#ifdef _DEBUG
+		#ifndef NDEBUG
 		root = new Node(debug_idx % dim, alphaSize, NULL);
 		#else
 		root = new Node(dis(gen), alphaSize, NULL);
@@ -257,7 +257,7 @@ public:
 		Node* cur = root;
 		bool stop = false;
 
-#ifdef _DEBUG
+#ifndef NDEBUG
 		CountT depth = 0;
 #endif
 
@@ -271,7 +271,7 @@ public:
 
 				cur->setPivot(point);
 
-#ifdef _DEBUG
+#ifndef NDEBUG
 				cur->children.push_back(new Node((debug_idx + depth + 1) % dim, alphaSize, cur));
 				cur->children.push_back(new Node((debug_idx + depth + 1) % dim, alphaSize, cur));
 #else
@@ -301,7 +301,7 @@ public:
 				stop = true;
 			}
 			cur = cur->children[cur->selectBranch(point)];
-#ifdef _DEBUG
+#ifndef NDEBUG
 			depth++;
 #endif
 
