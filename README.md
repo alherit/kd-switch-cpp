@@ -8,7 +8,7 @@ This repository contains an optimized iterative C++ implementation of the **kd-s
 
 [ArXiv version](https://arxiv.org/abs/1901.07662)
 
-This version runs about 70X faster than our pure Python recursive implementation https://github.com/alherit/kd-switch.
+This version runs about 70X faster than the pure Python recursive implementation https://github.com/alherit/kd-switch.
 
 This C++ implementation is also accessible from Python using the provided bindings.
 

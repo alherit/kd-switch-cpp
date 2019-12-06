@@ -76,12 +76,12 @@ LWPT KTEstimator(const CountersT& v)
 }
 
 // result is returned in dist that must be created with the correct number of elements
-void seqKTDist(DistT & dist, const CountersT& v) {
+void seqKTDist(DistT& dist, const CountersT& v) {
 	FT virt = 0.5; // number of virtual initial observations for each symbol
 
 	CountT total = 0;
 
-	for (CountersT::const_iterator it = v.begin(); it != v.end() ; it++)
+	for (CountersT::const_iterator it = v.begin(); it != v.end(); it++)
 		total += *it;
 
 	size_t i = 0;
@@ -112,7 +112,7 @@ private:
 
 public:
 	Node(size_t _projDir, size_t alphaSize, Node* _parent) :
-		projDir(_projDir), pivot(0), counts(alphaSize, 0), parent(_parent), ctProb(1.), ctProbNext(alphaSize), probKTNext(alphaSize), pRec(alphaSize), wa(.5), wb(.5){
+		projDir(_projDir), pivot(0), counts(alphaSize, 0), parent(_parent), ctProb(1.), ctProbNext(alphaSize), probKTNext(alphaSize), pRec(alphaSize), wa(.5), wb(.5) {
 	}
 
 	void setPivot(const PointT& point) {
@@ -158,14 +158,14 @@ public:
 
 		if (theta0.size() > 0) {
 			for (size_t i = 0; i < alphaSize; i++)
-				p0dist.push_back (LWPT(theta0[i]));
+				p0dist.push_back(LWPT(theta0[i]));
 		}
 
-		#ifndef NDEBUG
+#ifndef NDEBUG
 		root = new Node(debug_idx % dim, alphaSize, NULL);
-		#else
+#else
 		root = new Node(dis(gen), alphaSize, NULL);
-		#endif
+#endif
 
 	}
 
@@ -180,7 +180,7 @@ public:
 			}
 			else if (it->children[0] == NULL) {
 				save = it->children[1];
-				if(delete_items)
+				if (delete_items)
 					it->items.remove_if(deleteAll);
 				delete it;
 			}
@@ -371,7 +371,7 @@ private:
 public:
 	KDSForest(size_t _J, int seed, size_t _dim, size_t _alphaSize, bool _ctw, const vector<FT>& theta0) :J(_J), alphaSize(_alphaSize), weights(J, 1. / J), gen(seed) {
 		for (size_t j = 0; j < J; j++)
-			trees.push_back(new KDSTree(j,gen, _dim, _alphaSize, _ctw, theta0));
+			trees.push_back(new KDSTree(j, gen, _dim, _alphaSize, _ctw, theta0));
 	}
 
 
@@ -379,7 +379,7 @@ public:
 		if (J > 0) {
 			for (size_t j = 0; j < J - 1; j++)
 				trees[j]->destroy(false);
-			trees[J-1]->destroy(true); //delete items
+			trees[J - 1]->destroy(true); //delete items
 		}
 	}
 
@@ -400,7 +400,7 @@ public:
 
 	}
 
-	vector<FT> predict_proba(const PointT& point, bool frozen = true){
+	vector<FT> predict_proba(const PointT& point, bool frozen = true) {
 		DistT dist(alphaSize);
 		predict(dist, point, frozen);
 
@@ -431,16 +431,16 @@ public:
 		lp_ptr->point = point; // copy it
 
 
-		for (size_t j = 0; j < J; j++) 
+		for (size_t j = 0; j < J; j++)
 			trees[j]->update(lp_ptr, frozen);
-	
-		LWPT acc(0.);	
+
+		LWPT acc(0.);
 		for (size_t j = 0; j < J; j++) {
 			weights[j] = trees[j]->root->ctProb * LWPT(1. / J);
 			acc += weights[j];
 		}
 
-		for (size_t j = 0; j < J; j++) 
+		for (size_t j = 0; j < J; j++)
 			weights[j] /= acc;
 
 	}
