@@ -174,7 +174,8 @@ public:
 		Node* save;
 		for (Node* it = root; it != NULL; it = save) {
 			if (it->children.size() == 0) {
-				it->items.remove_if(deleteAll);
+				if (delete_items)
+					it->items.remove_if(deleteAll);
 				delete it;
 				save = NULL;
 			}
